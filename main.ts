@@ -26,26 +26,16 @@ function space_guy () {
 `, SpriteKind.Player)
     controller.moveSprite(waluigi)
 }
-function space_orb () {
-    projectile = sprites.createProjectileFromSide(img`
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. 5 . 5 5 5 . 5 5 . 5 . 5 . 5 . 
-5 4 5 4 5 4 5 4 5 4 5 4 5 4 5 4 
-4 5 4 5 4 5 4 5 4 5 4 5 4 5 4 5 
-5 . 5 5 . 5 5 . 5 5 . 5 . 5 . 5 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-`, 50, 100)
-}
+sprites.onOverlap(SpriteKind.Food, SpriteKind.Enemy, function (sprite, otherSprite) {
+    game.over(true, effects.bubbles)
+})
+sprites.onOverlap(SpriteKind.Food, SpriteKind.Projectile, function (sprite, otherSprite) {
+    projectile.destroy()
+    projectile2.destroy()
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Projectile, function (sprite, otherSprite) {
+    game.over(false, effects.slash)
+})
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     waluigi.setImage(img`
 . . . . . . . . . a a a a . . . . . . . 
@@ -98,6 +88,26 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
 . . . . . . . . . . . . . . . . 
 . . . . . . . . . . . . . . . . 
 `)
+    music.wawawawaa.play()
+    projectile2 = sprites.createProjectileFromSprite(img`
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. 2 2 . 1 1 1 1 1 1 1 1 . . . . 
+. . 2 1 1 1 1 1 1 1 1 1 2 . . . 
+. . . 1 1 1 f f f 1 1 1 2 2 . . 
+. 2 2 1 1 1 f 9 f 1 1 1 2 2 2 . 
+. . . 1 1 1 f f f 1 1 1 2 2 . . 
+. . . 1 1 1 1 1 1 1 1 1 2 . . . 
+. . 2 1 1 1 1 1 1 1 1 1 . . . . 
+. 2 2 . 1 1 1 1 1 1 1 . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+`, waluigi, 100, 0)
+    projectile2.setKind(SpriteKind.Food)
 })
 function enemy () {
     no = sprites.create(img`
@@ -122,14 +132,37 @@ function enemy () {
 . . . . . 7 7 7 7 7 7 7 7 7 7 7 . . . . . 
 . . . . . . 7 7 7 7 7 7 7 7 7 . . . . . . 
 . . . . . . . . . . . . . . . . . . . . . 
-`, SpriteKind.Player)
+`, SpriteKind.Enemy)
     no.setPosition(142, 54)
+    no.vy = 100
+    no.setFlag(SpriteFlag.BounceOnWall, true)
 }
 let no: Sprite = null
+let projectile2: Sprite = null
 let projectile: Sprite = null
 let waluigi: Sprite = null
 space_guy()
 enemy()
+game.onUpdateInterval(350, function () {
+    projectile = sprites.createProjectileFromSprite(img`
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. 5 . 5 5 5 . 5 5 . 5 . 5 . 5 . 
+5 4 5 4 5 4 5 4 5 4 5 4 5 4 5 4 
+4 5 4 5 4 5 4 5 4 5 4 5 4 5 4 5 
+5 . 5 5 . 5 5 . 5 5 . 5 . 5 . 5 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+`, no, -100, 0)
+})
 forever(function () {
     no.setImage(img`
 . . . . . . . . . . . . . . . . . . . . . 
