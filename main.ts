@@ -1,3 +1,43 @@
+namespace myTiles {
+    //% blockIdentity=images._tile
+    export const tile0 = img`
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+`
+    //% blockIdentity=images._tile
+    export const tile1 = img`
+f f f f f f f f f f f f f f f f 
+f f f f f f f f f f f f f f f f 
+f f 1 f f f f f f f f f 1 f f f 
+f f f f f f f f f f f f f f f f 
+f f f f f 1 f f f f f f f f f f 
+f f f f f f f f f f f f 1 f f f 
+f f f f f f f f f f f f f f f f 
+f f f f f f f f f f f f f f f f 
+f f f f f f f f f f f f f f f f 
+f f 1 f f f f f f f f f f f f f 
+f f f f f f f 1 f f f 1 f f f f 
+f f f f f f f f f f f f f f f f 
+f f f f 1 f f f f f f f f f f f 
+f f f f f f f f f f f f f f f f 
+f f 1 f f f f f f f f f f 1 f f 
+f f f f f f f f f f f f f f f f 
+`
+}
 function space_guy () {
     waluigi = sprites.create(img`
 . . . . . . . . . a a a a . . . 
@@ -26,13 +66,32 @@ function space_guy () {
 `, SpriteKind.Player)
     controller.moveSprite(waluigi)
 }
+function backround () {
+    tiles.setTilemap(tiles.createTilemap(
+            hex`100008000101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101`,
+            img`
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+`,
+            [myTiles.tile0,myTiles.tile1],
+            TileScale.Sixteen
+        ))
+}
+// this is for when you hit the enemy he loses life
 sprites.onOverlap(SpriteKind.Food, SpriteKind.Enemy, function (sprite, otherSprite) {
-    game.over(true, effects.bubbles)
+    info.changeLifeBy(-1)
 })
 sprites.onOverlap(SpriteKind.Food, SpriteKind.Projectile, function (sprite, otherSprite) {
     projectile.destroy()
     projectile2.destroy()
 })
+// This makes it so if you get hit you lose
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Projectile, function (sprite, otherSprite) {
     game.over(false, effects.slash)
 })
@@ -106,7 +165,7 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
 . . . . . . . . . . . . . . . . 
 . . . . . . . . . . . . . . . . 
 . . . . . . . . . . . . . . . . 
-`, waluigi, 100, 0)
+`, waluigi, 200, 0)
     projectile2.setKind(SpriteKind.Food)
 })
 function enemy () {
@@ -137,31 +196,63 @@ function enemy () {
     no.vy = 100
     no.setFlag(SpriteFlag.BounceOnWall, true)
 }
+sprites.onDestroyed(SpriteKind.Enemy, function (sprite) {
+    star = sprites.create(img`
+. . . . . . . f f . . . . . . . 
+. . . . . . f 5 5 f . . . . . . 
+. . . . . . f 5 5 f . . . . . . 
+. . . . . f 5 5 5 5 f . . . . . 
+f f f f f f 5 5 5 5 f f f f f f 
+f 5 5 5 5 5 5 5 5 5 5 5 5 5 5 f 
+. f 5 5 5 5 f 5 5 f 5 5 5 5 f . 
+. . f 5 5 5 f 5 5 f 5 5 5 f . . 
+. . . f 5 5 f 5 5 f 5 5 f . . . 
+. . . f 5 5 5 5 5 5 5 5 f . . . 
+. . f 5 5 5 5 5 5 5 5 5 5 f . . 
+. . f 5 5 5 5 5 5 5 5 5 5 f . . 
+. f 5 5 5 5 5 f f 5 5 5 5 5 f . 
+. f 5 5 5 f f . . f f 5 5 5 f . 
+f 5 5 f f . . . . . . f f 5 5 f 
+f f f . . . . . . . . . . f f f 
+`, SpriteKind.Player)
+    star.setPosition(141, 60)
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Player, function (sprite, otherSprite) {
+    game.splash("good job you win")
+    game.over(true)
+    star.destroy(effects.confetti, 500)
+})
+info.onLifeZero(function () {
+    no.destroy(effects.halo, 1000)
+})
+let star: Sprite = null
 let no: Sprite = null
 let projectile2: Sprite = null
 let projectile: Sprite = null
 let waluigi: Sprite = null
 space_guy()
 enemy()
+backround()
+info.setLife(1)
 game.onUpdateInterval(350, function () {
     projectile = sprites.createProjectileFromSprite(img`
 . . . . . . . . . . . . . . . . 
 . . . . . . . . . . . . . . . . 
 . . . . . . . . . . . . . . . . 
+. . . . . . . 1 . . . . . . . . 
+. . . . . . 1 1 1 . . . . . . . 
+. . . . . 1 1 9 1 1 . . . . . . 
+. . . . 1 9 1 1 1 1 1 . . . . . 
+. . . . . 1 1 1 9 1 . . . . . . 
+. . . . . . 1 1 1 . . . . . . . 
+. . . . . . . 1 . . . . . . . . 
 . . . . . . . . . . . . . . . . 
 . . . . . . . . . . . . . . . . 
 . . . . . . . . . . . . . . . . 
-. 5 . 5 5 5 . 5 5 . 5 . 5 . 5 . 
-5 4 5 4 5 4 5 4 5 4 5 4 5 4 5 4 
-4 5 4 5 4 5 4 5 4 5 4 5 4 5 4 5 
-5 . 5 5 . 5 5 . 5 5 . 5 . 5 . 5 
 . . . . . . . . . . . . . . . . 
 . . . . . . . . . . . . . . . . 
 . . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-`, no, -100, 0)
+`, no, -200, 0)
 })
 forever(function () {
     no.setImage(img`
