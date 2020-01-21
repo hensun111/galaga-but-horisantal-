@@ -37,7 +37,27 @@ f f f f f f f f f f f f f f f f
 f f 1 f f f f f f f f f f 1 f f 
 f f f f f f f f f f f f f f f f 
 `
+    //% blockIdentity=images._tile
+    export const tile2 = img`
+f f f f f f f f f f f f f f f f 
+f f f f f f f f f f f f f 5 f f 
+f f 5 f f f f f f f f f f f f f 
+f f f f f f f f f f f f f f f f 
+f f f f f f f f f f f f f f f f 
+f f f f f 5 f f f f 5 f f f f f 
+f f f f f f f f f f f f f f f f 
+f f f f f f f f f f f f f f f f 
+f f f f f f f f f f f f f 5 f f 
+f 5 f f f f f f f f f f f f f f 
+f f f f f f f f f f f f f f f f 
+f f f f f f 5 f f f f f f f f f 
+f f f f f f f f f f f f f f f f 
+f f f f f f f f f f f f f 5 f f 
+f f 5 f f f f f f f f f f f f f 
+f f f f f f f f f f f f f f f f 
+`
 }
+// This is the code for our hero
 function space_guy () {
     waluigi = sprites.create(img`
 . . . . . . . . . a a a a . . . 
@@ -65,7 +85,9 @@ function space_guy () {
 . . . . . . . . . . . . . . . . 
 `, SpriteKind.Player)
     controller.moveSprite(waluigi)
+    waluigi.setFlag(SpriteFlag.StayInScreen, true)
 }
+// this sets the backround
 function backround () {
     tiles.setTilemap(tiles.createTilemap(
             hex`100008000101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101`,
@@ -79,7 +101,7 @@ function backround () {
 . . . . . . . . . . . . . . . . 
 . . . . . . . . . . . . . . . . 
 `,
-            [myTiles.tile0,myTiles.tile1],
+            [myTiles.tile0,myTiles.tile1,myTiles.tile2],
             TileScale.Sixteen
         ))
 }
@@ -87,6 +109,8 @@ function backround () {
 sprites.onOverlap(SpriteKind.Food, SpriteKind.Enemy, function (sprite, otherSprite) {
     info.changeLifeBy(-1)
 })
+// this is for when your projectile colides with the
+// enemy's projectile they explode
 sprites.onOverlap(SpriteKind.Food, SpriteKind.Projectile, function (sprite, otherSprite) {
     projectile.destroy()
     projectile2.destroy()
@@ -95,6 +119,8 @@ sprites.onOverlap(SpriteKind.Food, SpriteKind.Projectile, function (sprite, othe
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Projectile, function (sprite, otherSprite) {
     game.over(false, effects.slash)
 })
+// This tells the hero to shoot a projectile when he
+// preses (A)
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     waluigi.setImage(img`
 . . . . . . . . . a a a a . . . . . . . 
@@ -147,7 +173,6 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
 . . . . . . . . . . . . . . . . 
 . . . . . . . . . . . . . . . . 
 `)
-    music.wawawawaa.play()
     projectile2 = sprites.createProjectileFromSprite(img`
 . . . . . . . . . . . . . . . . 
 . . . . . . . . . . . . . . . . 
@@ -168,6 +193,7 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
 `, waluigi, 200, 0)
     projectile2.setKind(SpriteKind.Food)
 })
+// This is the code for the green enemy
 function enemy () {
     no = sprites.create(img`
 . . . . . . . . . . . . . . . . . . . . . 
@@ -192,10 +218,12 @@ function enemy () {
 . . . . . . 7 7 7 7 7 7 7 7 7 . . . . . . 
 . . . . . . . . . . . . . . . . . . . . . 
 `, SpriteKind.Enemy)
-    no.setPosition(142, 54)
+    no.setPosition(146, 95)
     no.vy = 100
     no.setFlag(SpriteFlag.BounceOnWall, true)
 }
+// this tells the star to appear when the enemy is
+// destroyed
 sprites.onDestroyed(SpriteKind.Enemy, function (sprite) {
     star = sprites.create(img`
 . . . . . . . f f . . . . . . . 
@@ -217,14 +245,60 @@ f f f . . . . . . . . . . f f f
 `, SpriteKind.Player)
     star.setPosition(141, 60)
 })
+// This is for when you destroy the enemy star appears
+// when you touch it you win
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Player, function (sprite, otherSprite) {
-    game.splash("good job you win")
-    game.over(true)
     star.destroy(effects.confetti, 500)
+    tiles.setTilemap(tiles.createTilemap(
+            hex`100008000202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202`,
+            img`
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+`,
+            [myTiles.tile0,myTiles.tile1,myTiles.tile2],
+            TileScale.Sixteen
+        ))
+    stronger_no = sprites.create(img`
+. . . . . . . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . . . . . . 
+. . . . . . 2 2 2 2 2 2 2 2 2 . . . . . . 
+. . . . . 2 2 2 2 2 2 2 2 2 2 2 . . . . . 
+. . . . 2 f f f f 2 2 2 f f f f 2 . . . . 
+. . . 2 f 9 9 9 9 f 2 f 9 9 9 9 f 2 . . . 
+. . 2 2 f 9 f 9 9 f 2 f 9 f 9 9 f 2 2 . . 
+. . 2 2 f 9 9 9 9 f 2 f 9 9 9 9 f 2 2 . . 
+. . 2 2 f 9 9 9 9 f 2 f 9 9 9 9 f 2 2 . . 
+. . 2 2 2 f f f f 2 2 2 f f f f 2 2 2 . . 
+. . 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 . . 
+. . 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 . . 
+. . 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 . . 
+. . 2 2 2 f f f f f f f f f f f 2 2 2 . . 
+. . 2 2 2 f f f f f f f f f f f 2 2 2 . . 
+. . 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 . . 
+. . . 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 . . . 
+. . . . 2 2 2 2 2 2 2 2 2 2 2 2 2 . . . . 
+. . . . . 2 2 2 2 2 2 2 2 2 2 2 . . . . . 
+. . . . . . 2 2 2 2 2 2 2 2 2 . . . . . . 
+. . . . . . . . . . . . . . . . . . . . . 
+`, SpriteKind.Enemy)
+    stronger_no.setPosition(141, 80)
+    stronger_no.vy = 100
+    stronger_no.setFlag(SpriteFlag.BounceOnWall, true)
+    game.splash("You killed my brother")
+    game.splash("But I'm stronger now you die'")
 })
+// This tells the enemy to be destroyed when it loses
+// all of its health
 info.onLifeZero(function () {
     no.destroy(effects.halo, 1000)
 })
+let stronger_no: Sprite = null
 let star: Sprite = null
 let no: Sprite = null
 let projectile2: Sprite = null
@@ -233,8 +307,9 @@ let waluigi: Sprite = null
 space_guy()
 enemy()
 backround()
-info.setLife(1)
-game.onUpdateInterval(350, function () {
+info.setLife(70)
+// This is the projectile that comes from the enemy
+game.onUpdateInterval(500, function () {
     projectile = sprites.createProjectileFromSprite(img`
 . . . . . . . . . . . . . . . . 
 . . . . . . . . . . . . . . . . 
@@ -254,6 +329,29 @@ game.onUpdateInterval(350, function () {
 . . . . . . . . . . . . . . . . 
 `, no, -200, 0)
 })
+// This is the projectile that comes from the enemy
+game.onUpdateInterval(350, function () {
+    projectile = sprites.createProjectileFromSprite(img`
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . 1 . . . . . . . . 
+. . . . . . 1 1 1 . . . . . . . 
+. . . . . 1 1 9 1 1 . . . . . . 
+. . . . 1 9 1 1 1 1 1 . . . . . 
+. . . . . 1 1 1 9 1 . . . . . . 
+. . . . . . 1 1 1 . . . . . . . 
+. . . . . . . 1 . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+`, stronger_no, -200, 0)
+})
+// This changes the sprite for the enemy when he
+// shoots his projectile
 forever(function () {
     no.setImage(img`
 . . . . . . . . . . . . . . . . . . . . . 
@@ -278,7 +376,7 @@ forever(function () {
 . . . . . . 7 f f f f f f f 7 . . . . . . 
 . . . . . . . . . . . . . . . . . . . . . 
 `)
-    pause(1000)
+    pause(100)
     no.setImage(img`
 . . . . . . . . . . . . . . . . . . . . . 
 . . . . . . . . . . . . . . . . . . . . . 
@@ -302,5 +400,5 @@ forever(function () {
 . . . . . . 7 7 7 7 7 7 7 7 7 . . . . . . 
 . . . . . . . . . . . . . . . . . . . . . 
 `)
-    pause(1000)
+    pause(100)
 })
