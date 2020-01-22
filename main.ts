@@ -1,3 +1,6 @@
+namespace SpriteKind {
+    export const poo = SpriteKind.create()
+}
 namespace myTiles {
     //% blockIdentity=images._tile
     export const tile0 = img`
@@ -57,6 +60,9 @@ f f 5 f f f f f f f f f f f f f
 f f f f f f f f f f f f f f f f 
 `
 }
+function change_in_form () {
+	
+}
 // This is the code for our hero
 function space_guy () {
     waluigi = sprites.create(img`
@@ -87,6 +93,32 @@ function space_guy () {
     controller.moveSprite(waluigi)
     waluigi.setFlag(SpriteFlag.StayInScreen, true)
 }
+// this tells the star to appear when the enemy is
+// destroyed
+sprites.onDestroyed(SpriteKind.poo, function (sprite) {
+    star = sprites.create(img`
+. . . . . . . f f . . . . . . . 
+. . . . . . f 5 5 f . . . . . . 
+. . . . . . f 5 5 f . . . . . . 
+. . . . . f 5 5 5 5 f . . . . . 
+f f f f f f 5 5 5 5 f f f f f f 
+f 5 5 5 5 5 5 5 5 5 5 5 5 5 5 f 
+. f 5 5 5 5 f 5 5 f 5 5 5 5 f . 
+. . f 5 5 5 f 5 5 f 5 5 5 f . . 
+. . . f 5 5 f 5 5 f 5 5 f . . . 
+. . . f 5 5 5 5 5 5 5 5 f . . . 
+. . f 5 5 5 5 5 5 5 5 5 5 f . . 
+. . f 5 5 5 5 5 5 5 5 5 5 f . . 
+. f 5 5 5 5 5 f f 5 5 5 5 5 f . 
+. f 5 5 5 f f . . f f 5 5 5 f . 
+f 5 5 f f . . . . . . f f 5 5 f 
+f f f . . . . . . . . . . f f f 
+`, SpriteKind.Player)
+    star.setPosition(141, 60)
+})
+sprites.onOverlap(SpriteKind.Food, SpriteKind.poo, function (sprite, otherSprite) {
+    info.changeLifeBy(-1)
+})
 // this sets the backround
 function backround () {
     tiles.setTilemap(tiles.createTilemap(
@@ -222,48 +254,7 @@ function enemy () {
     no.vy = 100
     no.setFlag(SpriteFlag.BounceOnWall, true)
 }
-// this tells the star to appear when the enemy is
-// destroyed
 sprites.onDestroyed(SpriteKind.Enemy, function (sprite) {
-    star = sprites.create(img`
-. . . . . . . f f . . . . . . . 
-. . . . . . f 5 5 f . . . . . . 
-. . . . . . f 5 5 f . . . . . . 
-. . . . . f 5 5 5 5 f . . . . . 
-f f f f f f 5 5 5 5 f f f f f f 
-f 5 5 5 5 5 5 5 5 5 5 5 5 5 5 f 
-. f 5 5 5 5 f 5 5 f 5 5 5 5 f . 
-. . f 5 5 5 f 5 5 f 5 5 5 f . . 
-. . . f 5 5 f 5 5 f 5 5 f . . . 
-. . . f 5 5 5 5 5 5 5 5 f . . . 
-. . f 5 5 5 5 5 5 5 5 5 5 f . . 
-. . f 5 5 5 5 5 5 5 5 5 5 f . . 
-. f 5 5 5 5 5 f f 5 5 5 5 5 f . 
-. f 5 5 5 f f . . f f 5 5 5 f . 
-f 5 5 f f . . . . . . f f 5 5 f 
-f f f . . . . . . . . . . f f f 
-`, SpriteKind.Player)
-    star.setPosition(141, 60)
-})
-// This is for when you destroy the enemy star appears
-// when you touch it you win
-sprites.onOverlap(SpriteKind.Player, SpriteKind.Player, function (sprite, otherSprite) {
-    star.destroy(effects.confetti, 500)
-    tiles.setTilemap(tiles.createTilemap(
-            hex`100008000202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202`,
-            img`
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-`,
-            [myTiles.tile0,myTiles.tile1,myTiles.tile2],
-            TileScale.Sixteen
-        ))
     stronger_no = sprites.create(img`
 . . . . . . . . . . . . . . . . . . . . . 
 . . . . . . . . . . . . . . . . . . . . . 
@@ -286,48 +277,53 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Player, function (sprite, otherS
 . . . . . 2 2 2 2 2 2 2 2 2 2 2 . . . . . 
 . . . . . . 2 2 2 2 2 2 2 2 2 . . . . . . 
 . . . . . . . . . . . . . . . . . . . . . 
-`, SpriteKind.Enemy)
-    stronger_no.setPosition(141, 80)
-    stronger_no.vy = 100
+`, SpriteKind.poo)
+    stronger_no.setPosition(146, 55)
+    stronger_no.vy = 150
     stronger_no.setFlag(SpriteFlag.BounceOnWall, true)
-    game.splash("You killed my brother")
-    game.splash("But I'm stronger now you die'")
+    game.splash("you fool you thought you could defeat me")
+    stronger_no.say("poo", 5000)
+})
+// This is for when you destroy the enemy star appears
+// when you touch it you win
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Player, function (sprite, otherSprite) {
+    star.destroy(effects.confetti, 500)
+    tiles.setTilemap(tiles.createTilemap(
+            hex`100008000202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202`,
+            img`
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+`,
+            [myTiles.tile0,myTiles.tile1,myTiles.tile2],
+            TileScale.Sixteen
+        ))
+    game.over(true)
 })
 // This tells the enemy to be destroyed when it loses
 // all of its health
 info.onLifeZero(function () {
-    no.destroy(effects.halo, 1000)
+    stronger_no.destroy(effects.halo, 1000)
 })
 let stronger_no: Sprite = null
-let star: Sprite = null
 let no: Sprite = null
 let projectile2: Sprite = null
 let projectile: Sprite = null
+let star: Sprite = null
 let waluigi: Sprite = null
 space_guy()
 enemy()
 backround()
 info.setLife(70)
-// This is the projectile that comes from the enemy
-game.onUpdateInterval(500, function () {
-    projectile = sprites.createProjectileFromSprite(img`
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . 1 . . . . . . . . 
-. . . . . . 1 1 1 . . . . . . . 
-. . . . . 1 1 9 1 1 . . . . . . 
-. . . . 1 9 1 1 1 1 1 . . . . . 
-. . . . . 1 1 1 9 1 . . . . . . 
-. . . . . . 1 1 1 . . . . . . . 
-. . . . . . . 1 . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-`, no, -200, 0)
+game.onUpdate(function () {
+    if (info.life() <= 30) {
+        no.destroy()
+    }
 })
 // This is the projectile that comes from the enemy
 game.onUpdateInterval(350, function () {
@@ -376,7 +372,7 @@ forever(function () {
 . . . . . . 7 f f f f f f f 7 . . . . . . 
 . . . . . . . . . . . . . . . . . . . . . 
 `)
-    pause(100)
+    pause(1000)
     no.setImage(img`
 . . . . . . . . . . . . . . . . . . . . . 
 . . . . . . . . . . . . . . . . . . . . . 
@@ -400,5 +396,29 @@ forever(function () {
 . . . . . . 7 7 7 7 7 7 7 7 7 . . . . . . 
 . . . . . . . . . . . . . . . . . . . . . 
 `)
-    pause(100)
+    pause(1000)
+})
+game.onUpdateInterval(1000, function () {
+    info.changeScoreBy(10)
+})
+// This is the projectile that comes from the enemy
+game.onUpdateInterval(1000, function () {
+    projectile = sprites.createProjectileFromSprite(img`
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . 1 . . . . . . . . 
+. . . . . . 1 1 1 . . . . . . . 
+. . . . . 1 1 9 1 1 . . . . . . 
+. . . . 1 9 1 1 1 1 1 . . . . . 
+. . . . . 1 1 1 9 1 . . . . . . 
+. . . . . . 1 1 1 . . . . . . . 
+. . . . . . . 1 . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+`, no, -200, 0)
 })
