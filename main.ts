@@ -137,6 +137,9 @@ function backround () {
             TileScale.Sixteen
         ))
 }
+function stronger_no0 () {
+    stronger_no.setPosition(-10000, -10000)
+}
 // this is for when you hit the enemy he loses life
 sprites.onOverlap(SpriteKind.Food, SpriteKind.Enemy, function (sprite, otherSprite) {
     info.changeLifeBy(-1)
@@ -282,6 +285,7 @@ sprites.onDestroyed(SpriteKind.Enemy, function (sprite) {
     stronger_no.vy = 150
     stronger_no.setFlag(SpriteFlag.BounceOnWall, true)
     game.splash("you fool you thought you could defeat me")
+    no.setPosition(-1000, -1000)
     stronger_no.say("poo", 5000)
 })
 // This is for when you destroy the enemy star appears
@@ -310,10 +314,10 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Player, function (sprite, otherS
 info.onLifeZero(function () {
     stronger_no.destroy(effects.halo, 1000)
 })
-let stronger_no: Sprite = null
 let no: Sprite = null
 let projectile2: Sprite = null
 let projectile: Sprite = null
+let stronger_no: Sprite = null
 let star: Sprite = null
 let waluigi: Sprite = null
 space_guy()
