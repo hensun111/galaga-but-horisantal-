@@ -1,17 +1,16 @@
 {
-    "name": "galaga but horisantal ",
-    "description": "",
+    "name": "galaga-but-horisantal-",
     "dependencies": {
         "device": "*"
     },
     "files": [
+        ".vscode/settings.json",
+        ".vscode/tasks.json",
+        "README.md",
         "main.blocks",
         "main.ts",
-        "README.md",
-        null
-    ],
-    "testFiles": [
-        "test.ts"
+        "test.ts",
+        "tsconfig.json"
     ],
     "supportedTargets": [
         "arcade"
