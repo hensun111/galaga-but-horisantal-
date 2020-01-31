@@ -1,5 +1,6 @@
 namespace SpriteKind {
     export const poo = SpriteKind.create()
+    export const boi = SpriteKind.create()
 }
 namespace myTiles {
     //% blockIdentity=images._tile
@@ -60,9 +61,55 @@ f f 5 f f f f f f f f f f f f f
 f f f f f f f f f f f f f f f f 
 `
 }
-function change_in_form () {
-	
+// this tells the star to appear when the enemy is
+// destroyed
+sprites.onDestroyed(SpriteKind.poo, function (sprite) {
+    star = sprites.create(img`
+. . . . . . . f f . . . . . . . 
+. . . . . . f 5 5 f . . . . . . 
+. . . . . . f 5 5 f . . . . . . 
+. . . . . f 5 5 5 5 f . . . . . 
+f f f f f f 5 5 5 5 f f f f f f 
+f 5 5 5 5 5 5 5 5 5 5 5 5 5 5 f 
+. f 5 5 5 5 f 5 5 f 5 5 5 5 f . 
+. . f 5 5 5 f 5 5 f 5 5 5 f . . 
+. . . f 5 5 f 5 5 f 5 5 f . . . 
+. . . f 5 5 5 5 5 5 5 5 f . . . 
+. . f 5 5 5 5 5 5 5 5 5 5 f . . 
+. . f 5 5 5 5 5 5 5 5 5 5 f . . 
+. f 5 5 5 5 5 f f 5 5 5 5 5 f . 
+. f 5 5 5 f f . . f f 5 5 5 f . 
+f 5 5 f f . . . . . . f f 5 5 f 
+f f f . . . . . . . . . . f f f 
+`, SpriteKind.Player)
+    star.setPosition(141, 60)
+})
+// this is for when you hit the enemy he loses life
+sprites.onOverlap(SpriteKind.Food, SpriteKind.poo, function (sprite, otherSprite) {
+    info.changeLifeBy(-1)
+})
+// this sets the backround
+function backround () {
+    tiles.setTilemap(tiles.createTilemap(
+            hex`100008000101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101`,
+            img`
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+`,
+            [myTiles.tile0,myTiles.tile1,myTiles.tile2],
+            TileScale.Sixteen
+        ))
 }
+// this is for when you hit the enemy he loses life
+sprites.onOverlap(SpriteKind.Food, SpriteKind.Enemy, function (sprite, otherSprite) {
+    info.changeLifeBy(-1)
+})
 // This is the code for our hero
 function space_guy () {
     waluigi = sprites.create(img`
@@ -93,57 +140,6 @@ function space_guy () {
     controller.moveSprite(waluigi)
     waluigi.setFlag(SpriteFlag.StayInScreen, true)
 }
-// this tells the star to appear when the enemy is
-// destroyed
-sprites.onDestroyed(SpriteKind.poo, function (sprite) {
-    star = sprites.create(img`
-. . . . . . . f f . . . . . . . 
-. . . . . . f 5 5 f . . . . . . 
-. . . . . . f 5 5 f . . . . . . 
-. . . . . f 5 5 5 5 f . . . . . 
-f f f f f f 5 5 5 5 f f f f f f 
-f 5 5 5 5 5 5 5 5 5 5 5 5 5 5 f 
-. f 5 5 5 5 f 5 5 f 5 5 5 5 f . 
-. . f 5 5 5 f 5 5 f 5 5 5 f . . 
-. . . f 5 5 f 5 5 f 5 5 f . . . 
-. . . f 5 5 5 5 5 5 5 5 f . . . 
-. . f 5 5 5 5 5 5 5 5 5 5 f . . 
-. . f 5 5 5 5 5 5 5 5 5 5 f . . 
-. f 5 5 5 5 5 f f 5 5 5 5 5 f . 
-. f 5 5 5 f f . . f f 5 5 5 f . 
-f 5 5 f f . . . . . . f f 5 5 f 
-f f f . . . . . . . . . . f f f 
-`, SpriteKind.Player)
-    star.setPosition(141, 60)
-})
-sprites.onOverlap(SpriteKind.Food, SpriteKind.poo, function (sprite, otherSprite) {
-    info.changeLifeBy(-1)
-})
-// this sets the backround
-function backround () {
-    tiles.setTilemap(tiles.createTilemap(
-            hex`100008000101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101`,
-            img`
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-`,
-            [myTiles.tile0,myTiles.tile1,myTiles.tile2],
-            TileScale.Sixteen
-        ))
-}
-function stronger_no0 () {
-    stronger_no.setPosition(-10000, -10000)
-}
-// this is for when you hit the enemy he loses life
-sprites.onOverlap(SpriteKind.Food, SpriteKind.Enemy, function (sprite, otherSprite) {
-    info.changeLifeBy(-1)
-})
 // this is for when your projectile colides with the
 // enemy's projectile they explode
 sprites.onOverlap(SpriteKind.Food, SpriteKind.Projectile, function (sprite, otherSprite) {
@@ -154,6 +150,9 @@ sprites.onOverlap(SpriteKind.Food, SpriteKind.Projectile, function (sprite, othe
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Projectile, function (sprite, otherSprite) {
     game.over(false, effects.slash)
 })
+function stronger_no0 () {
+    stronger_no.setPosition(-10000, -10000)
+}
 // This tells the hero to shoot a projectile when he
 // preses (A)
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
@@ -257,6 +256,7 @@ function enemy () {
     no.vy = 100
     no.setFlag(SpriteFlag.BounceOnWall, true)
 }
+// when no reaches 30 health he changes form
 sprites.onDestroyed(SpriteKind.Enemy, function (sprite) {
     stronger_no = sprites.create(img`
 . . . . . . . . . . . . . . . . . . . . . 
@@ -291,7 +291,6 @@ sprites.onDestroyed(SpriteKind.Enemy, function (sprite) {
 // This is for when you destroy the enemy star appears
 // when you touch it you win
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Player, function (sprite, otherSprite) {
-    star.destroy(effects.confetti, 500)
     tiles.setTilemap(tiles.createTilemap(
             hex`100008000202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202`,
             img`
@@ -307,6 +306,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Player, function (sprite, otherS
             [myTiles.tile0,myTiles.tile1,myTiles.tile2],
             TileScale.Sixteen
         ))
+    star.destroy()
     game.over(true)
 })
 // This tells the enemy to be destroyed when it loses
@@ -315,17 +315,20 @@ info.onLifeZero(function () {
     stronger_no.destroy(effects.halo, 1000)
 })
 let no: Sprite = null
+let stronger_no: Sprite = null
 let projectile2: Sprite = null
 let projectile: Sprite = null
-let stronger_no: Sprite = null
-let star: Sprite = null
 let waluigi: Sprite = null
+let star: Sprite = null
 space_guy()
 enemy()
 backround()
-info.setLife(70)
+info.setLife(100)
+info.setScore(1000)
+// this makes it so when the enemy gets to 30 life
+// points he changes forms
 game.onUpdate(function () {
-    if (info.life() <= 30) {
+    if (info.life() <= 50) {
         no.destroy()
     }
 })
@@ -351,7 +354,7 @@ game.onUpdateInterval(350, function () {
 `, stronger_no, -200, 0)
 })
 // This changes the sprite for the enemy when he
-// shoots his projectile
+// shoots his projectile  a  a s                v
 forever(function () {
     no.setImage(img`
 . . . . . . . . . . . . . . . . . . . . . 
@@ -394,7 +397,7 @@ forever(function () {
 . . 7 7 7 f f f f f f f f f f f 7 7 7 . . 
 . . 7 7 7 f f f f f f f f f f f 7 7 7 . . 
 . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . 
-. . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . 
+. . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . 3 
 . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . 
 . . . . . 7 7 7 7 7 7 7 7 7 7 7 . . . . . 
 . . . . . . 7 7 7 7 7 7 7 7 7 . . . . . . 
@@ -402,8 +405,9 @@ forever(function () {
 `)
     pause(1000)
 })
+// this is for every second you get ten points
 game.onUpdateInterval(1000, function () {
-    info.changeScoreBy(10)
+    info.changeScoreBy(-10)
 })
 // This is the projectile that comes from the enemy
 game.onUpdateInterval(1000, function () {
